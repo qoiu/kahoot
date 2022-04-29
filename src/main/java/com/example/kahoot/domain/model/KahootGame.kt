@@ -1,7 +1,10 @@
 package com.example.kahoot.domain.model
 
 class KahootGame(private val kahoot: Kahoot, private val users: List<User>) {
+
     private var question: Int = 0
+
+    val statistic: GameStatistic = GameStatistic.Base(users)
 
 
     fun getQuestion() = kahoot.questions[question]
@@ -16,4 +19,5 @@ class KahootGame(private val kahoot: Kahoot, private val users: List<User>) {
     }
 
     fun isLastQuestion() = question < kahoot.questions.size
+
 }

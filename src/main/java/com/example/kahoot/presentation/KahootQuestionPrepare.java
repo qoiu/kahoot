@@ -19,6 +19,7 @@ public class KahootQuestionPrepare extends BaseController<KahootGame> {
 
     private KahootGame game;
 
+
     @Override
     public void getData(KahootGame data) {
         game = data;
@@ -56,7 +57,7 @@ public class KahootQuestionPrepare extends BaseController<KahootGame> {
         timeLabel.setVisible(true);
         Platform.runLater(this::showAnswers);
         game.users((user) -> {
-            user.setCurrentState(new UserState.Answer(game.getQuestion()));
+            user.setCurrentState(new UserState.Answer(game.getQuestion(), game.getStatistic().userStatistic(user)));
             user.execute();
             return null;
         });

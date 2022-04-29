@@ -31,7 +31,7 @@ public class Main extends Application {
 
     private static Bot.Base bot;
     private static BotSession session;
-    private static MainPresenter presenter;
+    private static MainPresenter.Full presenter;
     private static DatabaseBase db;
 
     public static void main(String[] args) {

@@ -14,7 +14,7 @@ interface FxInteractor : SimpleObserver<MsgReceiver> {
     fun sendMsg(reply: Reply)
     fun close()
 
-    class Base(private val db: DatabaseInterface.Executor, private val presenter: MainPresenter) :
+    class Base(private val db: DatabaseInterface.Executor, private val presenter: MainPresenter.Full) :
         BaseObserver<MsgReceiver>(), FxInteractor, MsgReceiver {
 
         init {

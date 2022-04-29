@@ -46,15 +46,18 @@ sealed class UserState {
         }
     }
 
-    class Answer(private val question: KahootQuestion) : UserState() {
+    class Answer(private val question: KahootQuestion, private val statistic: UserStatistic.Add): UserState() {
         override fun execute(message: String) {
-            if (message.startsWith("/")) {
+            if (message.startsWith("/") && message[1].toString().toInt() in 0 until question.answers.size) {
                 presenter.postMsg(
                     Reply(
                         user.id,
-                        "${question.question} \n ${question.answers[message[1].toString().toInt()]}"
+                        "${question.question}\n${question.answers[message[1].toString().toInt()]}"
                     )
                 )
+                val answerId = message[1].toString().toInt()
+                statistic.addAnswer(question.correct==question.answers[answerId],10L)
+                user.currentState = NoReact
             }
         }
 
@@ -78,13 +81,15 @@ sealed class UserState {
         }
     }
 
+    object NoReact: UserState()
+
     companion object {
         @JvmStatic
         protected lateinit var db: Executor
 
         @JvmStatic
-        protected lateinit var presenter: MainPresenter
-        fun init(db: Executor, presenter: MainPresenter) {
+        protected lateinit var presenter: MainPresenter.MessengerActions
+        fun init(db: Executor, presenter: MainPresenter.MessengerActions) {
             Companion.db = db
             Companion.presenter = presenter
         }

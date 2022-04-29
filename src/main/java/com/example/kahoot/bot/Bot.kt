@@ -10,7 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.Update
 
 interface Bot {
 
-    fun setPresenter(presenter: MainPresenter)
+    fun setPresenter(presenter: MainPresenter.Full)
     fun sendMsg(reply: Reply)
     fun clearChat(id: Long, user: Boolean = true, bot: Boolean = true)
 
@@ -23,7 +23,7 @@ interface Bot {
 
     class Base(token: String, options: DefaultBotOptions = DefaultBotOptions()) : BaseBot.Base(token, options), Bot, Delete {
 
-        private lateinit var presenter: MainPresenter
+        private lateinit var presenter: MainPresenter.Full
         private val users: MutableSet<User> = mutableSetOf()
         private val chatBotHistory = mutableMapOf<Long, UserHistory>()
 
@@ -65,7 +65,7 @@ interface Bot {
             }
         }
 
-        override fun setPresenter(presenter: MainPresenter) {
+        override fun setPresenter(presenter: MainPresenter.Full) {
             this.presenter = presenter
             val extra = presenter.getAllUsers()
             users.addAll(extra)

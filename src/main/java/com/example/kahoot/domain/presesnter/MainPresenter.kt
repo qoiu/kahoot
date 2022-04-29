@@ -13,21 +13,48 @@ import com.example.kahoot.domain.model.UserState
 
 interface MainPresenter : SimpleObserver<MsgReceiver> {
 
-    fun setBot(bot: Bot)
-    fun lostConnection()
-    fun getAllUsers(): Set<User>
-    fun addUser(user: User)
-    fun getMsg(user: User, message: String)
-    fun postMsg(message: Reply, clear: Boolean = true)
-    fun stopBot()
+    interface MessengerActions{
+        fun getMsg(user: User, message: String)
+        fun postMsg(message: Reply, clear: Boolean = true)
 
-    class Base(private val db: DatabaseBase) : BaseObserver<MsgReceiver>(), MainPresenter {
+        class Test(): MessengerActions{
+            private var message: String=""
+            private var reply: Reply = Reply(0,"empty")
+
+            val actualMsg: String
+            get() = message
+
+            val actualReply: Reply
+            get() = reply
+            override fun getMsg(user: User, message: String) {
+                this.message = message
+            }
+
+            override fun postMsg(message: Reply, clear: Boolean) {
+                this.reply = message
+            }
+        }
+    }
+
+    interface BotActions: UserActions{
+        fun setBot(bot: Bot)
+        fun lostConnection()
+        fun stopBot()
+    }
+
+    interface UserActions{
+        fun getAllUsers(): Set<User>
+        fun addUser(user: User)
+    }
+
+    interface Full: MessengerActions, BotActions, MainPresenter
+
+    class Base(private val db: DatabaseBase) : BaseObserver<MsgReceiver>(), Full {
 
         init {
             UserState.init(db, this)
         }
 
-        private lateinit var getMsg: (User, String) -> Unit
         private lateinit var bot: Bot
         override fun setBot(bot: Bot) {
             this.bot = bot

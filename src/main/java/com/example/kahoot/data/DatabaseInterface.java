@@ -11,6 +11,24 @@ public interface DatabaseInterface {
 
         int executeUpdate(String sql, Object... args);
 
+        class Test implements Executor {
+
+            @Override
+            public void execute(String sql, Object... args) {
+
+            }
+
+            @Override
+            public ResultSet executeQuery(String sql) {
+                return null;
+            }
+
+            @Override
+            public int executeUpdate(String sql, Object... args) {
+                return 0;
+            }
+        }
+
     }
 
     interface Cleaner {
