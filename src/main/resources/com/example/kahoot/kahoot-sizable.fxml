@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="571.0"
+      prefWidth="906.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.kahoot.presentation.KahootSizableController">
+    <VBox prefHeight="200.0" prefWidth="400.0">
+        <ListView fx:id="list" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS"/>
+        <HBox VBox.vgrow="NEVER">
+            <Button mnemonicParsing="false" onAction="#onSaveKahootAction" text="Save Kahoot"/>
+        </HBox>
+    </VBox>
+    <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="493.0"
+          prefWidth="642.0">
+        <TextField fx:id="header" promptText="Please enter question">
+            <VBox.margin>
+                <Insets bottom="40.0" left="40.0" right="40.0" top="40.0"/>
+            </VBox.margin>
+            <font>
+                <Font size="24.0"/>
+            </font>
+        </TextField>
+        <CheckBox fx:id="trueFalse" alignment="CENTER" mnemonicParsing="false" onAction="#changeTrueFalse"
+                  text="True/False" VBox.vgrow="ALWAYS">
+            <padding>
+                <Insets left="40.0" right="40.0"/>
+            </padding>
+        </CheckBox>
+        <Pane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+            <VBox.margin>
+                <Insets bottom="40.0" left="40.0" right="40.0" top="40.0"/>
+            </VBox.margin>
+        </Pane>
+        <HBox prefHeight="100.0" prefWidth="200.0">
+            <TextField fx:id="answ1" promptText="Please enter answer" HBox.hgrow="ALWAYS">
+                <HBox.margin>
+                    <Insets bottom="40.0" left="40.0" right="20.0" top="40.0"/>
+                </HBox.margin>
+                <font>
+                    <Font size="14.0"/>
+                </font>
+            </TextField>
+            <RadioButton fx:id="answRbtn1" mnemonicParsing="false" onAction="#changeValue">
+                <HBox.margin>
+                    <Insets bottom="40.0" right="20.0" top="40.0"/>
+                </HBox.margin>
+                <toggleGroup>
+                    <ToggleGroup fx:id="group"/>
+                </toggleGroup>
+            </RadioButton>
+            <TextField fx:id="answ2" promptText="Please enter answer" HBox.hgrow="ALWAYS">
+                <HBox.margin>
+                    <Insets bottom="40.0" left="40.0" right="20.0" top="40.0"/>
+                </HBox.margin>
+                <font>
+                    <Font size="14.0"/>
+                </font>
+            </TextField>
+            <RadioButton fx:id="answRbtn2" mnemonicParsing="false" onAction="#changeValue"
+                         toggleGroup="$group">
+                <HBox.margin>
+                    <Insets bottom="40.0" right="40.0" top="40.0"/>
+                </HBox.margin>
+            </RadioButton>
+        </HBox>
+        <HBox prefHeight="100.0" prefWidth="200.0">
+            <TextField fx:id="answ3" promptText="Please enter answer" HBox.hgrow="ALWAYS">
+                <HBox.margin>
+                    <Insets bottom="40.0" left="40.0" right="20.0" top="40.0"/>
+                </HBox.margin>
+                <font>
+                    <Font size="14.0"/>
+                </font>
+            </TextField>
+            <RadioButton fx:id="answRbtn3" mnemonicParsing="false" onAction="#changeValue"
+                         toggleGroup="$group">
+                <HBox.margin>
+                    <Insets bottom="40.0" right="20.0" top="40.0"/>
+                </HBox.margin>
+            </RadioButton>
+            <TextField fx:id="answ4" promptText="Please enter answer" HBox.hgrow="ALWAYS">
+                <HBox.margin>
+                    <Insets bottom="40.0" left="40.0" right="20.0" top="40.0"/>
+                </HBox.margin>
+                <font>
+                    <Font size="14.0"/>
+                </font>
+            </TextField>
+            <RadioButton fx:id="answRbtn4" mnemonicParsing="false" onAction="#changeValue"
+                         toggleGroup="$group">
+                <HBox.margin>
+                    <Insets bottom="40.0" right="40.0" top="40.0"/>
+                </HBox.margin>
+            </RadioButton>
+        </HBox>
+    </VBox>
+</HBox>

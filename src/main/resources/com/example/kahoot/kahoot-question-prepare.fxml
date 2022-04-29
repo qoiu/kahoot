@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+      prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.kahoot.presentation.KahootQuestionPrepare">
+    <Label fx:id="question" alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308"
+           VBox.vgrow="ALWAYS">
+        <VBox.margin>
+            <Insets/>
+        </VBox.margin>
+        <font>
+            <Font size="45.0"/>
+        </font>
+    </Label>
+    <Label fx:id="timeLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308"
+           maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity">
+        <font>
+            <Font size="46.0"/>
+        </font>
+    </Label>
+    <HBox prefHeight="100.0" prefWidth="200.0">
+        <Label fx:id="answ1" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308"
+               maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" HBox.hgrow="ALWAYS">
+            <font>
+                <Font size="46.0"/>
+            </font>
+        </Label>
+        <Label fx:id="answ2" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308"
+               maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" HBox.hgrow="ALWAYS">
+            <font>
+                <Font size="46.0"/>
+            </font>
+        </Label>
+    </HBox>
+    <HBox prefHeight="100.0" prefWidth="200.0">
+        <Label fx:id="answ3" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308"
+               maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" HBox.hgrow="ALWAYS">
+            <font>
+                <Font size="46.0"/>
+            </font>
+        </Label>
+        <Label fx:id="answ4" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308"
+               maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" HBox.hgrow="ALWAYS">
+            <font>
+                <Font size="46.0"/>
+            </font>
+        </Label>
+    </HBox>
+    <Button fx:id="nextQuestion" mnemonicParsing="false" onAction="#onNextQuestion" text="Next question"/>
+</VBox>

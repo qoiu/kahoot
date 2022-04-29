@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+      prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.kahoot.presentation.KahootListController">
+    <ListView fx:id="list" onEditCommit="#itemClick" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+        <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+        </padding>
+    </ListView>
+    <HBox spacing="10.0" VBox.vgrow="SOMETIMES">
+        <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+        </padding>
+        <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#onNewClick" text="New">
+            <HBox.margin>
+                <Insets right="40.0"/>
+            </HBox.margin>
+        </Button>
+        <Button fx:id="editBtn" mnemonicParsing="false" onAction="#onEditKahootAction" text="Edit">
+            <HBox.margin>
+                <Insets right="40.0"/>
+            </HBox.margin>
+        </Button>
+        <Button fx:id="startBtn" mnemonicParsing="false" onAction="#onStartKahoot" text="Start" HBox.hgrow="SOMETIMES">
+            <HBox.margin>
+                <Insets right="40.0"/>
+            </HBox.margin>
+        </Button>
+        <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onBackClick" text="Back"/>
+    </HBox>
+</VBox>
