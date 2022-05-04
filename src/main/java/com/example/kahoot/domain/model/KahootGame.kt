@@ -26,8 +26,14 @@ class KahootGame(
     }
 
     override fun addAnswer(user: User, answer: String) {
+        var answerId: Int = -1
+        getQuestion().answers.forEachIndexed { index, s ->
+            if (answer == s)
+                answerId = index
+        }
         statistic.userStatistic(user).addAnswer(
-            kahoot.questions[question].correct == answer,
+            getQuestion().correct == answer,
+            answerId,
             (Date().time - timer) / 10
         )
         println("answer: $answer, time: ${(Date().time - timer) / 1000}")

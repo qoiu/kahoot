@@ -29,8 +29,7 @@ public class KahootQuestionPrepare extends BaseController<KahootGame> {
                 Platform.runLater(() -> timeLabel.setText(finalCountdown + ""));
                 try {
                     Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                } catch (InterruptedException ignored) {
                 }
             }
             finish.finish();
