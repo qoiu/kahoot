@@ -2,7 +2,6 @@ package com.example.kahoot.bot
 
 import com.example.kahoot.domain.model.Reply
 import com.example.kahoot.domain.model.User
-import com.example.kahoot.domain.model.UserState
 import com.example.kahoot.domain.presesnter.MainPresenter
 import org.telegram.telegrambots.bots.DefaultBotOptions
 import org.telegram.telegrambots.meta.api.objects.Message
@@ -21,10 +20,10 @@ interface Bot {
     }
 
 
-    class Base(token: String, options: DefaultBotOptions = DefaultBotOptions()) : BaseBot.Base(token, options), Bot, Delete {
+    class Base(token: String, options: DefaultBotOptions = DefaultBotOptions()) : BaseBot.Base(token, options), Bot,
+        Delete {
 
         private lateinit var presenter: MainPresenter.Full
-        private val users: MutableSet<User> = mutableSetOf()
         private val chatBotHistory = mutableMapOf<Long, UserHistory>()
 
         override fun getBotUsername(): String = "@TestBot"
@@ -54,22 +53,18 @@ interface Bot {
             update?.let { deleteMsg(it.message) }
         }
 
-        private fun getUser(tgUser: org.telegram.telegrambots.meta.api.objects.User): User {
-            val user = users.find { it.id == tgUser.id }
-            return if (user != null) {
-                user
-            } else {
-                val newUser = User(tgUser.id, tgUser.userName?:" ", tgUser.userName?:" ", tgUser.firstName?:" ", UserState.Default())
-                presenter.addUser(newUser)
-                newUser
-            }
-        }
+        private fun getUser(tgUser: org.telegram.telegrambots.meta.api.objects.User): User = presenter.getUser(
+            User(
+                tgUser.id,
+                tgUser.userName ?: " ",
+                tgUser.userName ?: " ",
+                tgUser.firstName
+            )
+        )
 
         override fun setPresenter(presenter: MainPresenter.Full) {
             this.presenter = presenter
-            val extra = presenter.getAllUsers()
-            users.addAll(extra)
-            users.forEach {
+            presenter.getAllUsers().forEach {
                 chatBotHistory[it.id] = UserHistory()
             }
         }

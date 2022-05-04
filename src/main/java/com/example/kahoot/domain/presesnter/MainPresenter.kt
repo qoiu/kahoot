@@ -40,19 +40,23 @@ interface MainPresenter : SimpleObserver<MsgReceiver> {
         fun setBot(bot: Bot)
         fun lostConnection()
         fun stopBot()
+        fun addUser(user: User): User
     }
 
     interface UserActions{
         fun getAllUsers(): Set<User>
-        fun addUser(user: User)
+        fun getUser(user: User): User
     }
 
     interface Full: MessengerActions, BotActions, MainPresenter
 
     class Base(private val db: DatabaseBase) : BaseObserver<MsgReceiver>(), Full {
 
+
+        private val users: MutableSet<User> = mutableSetOf()
         init {
             UserState.init(db, this)
+            users.addAll(DbAllUsers(db).execute())
         }
 
         private lateinit var bot: Bot
@@ -72,12 +76,19 @@ interface MainPresenter : SimpleObserver<MsgReceiver> {
 //            tables.clearTables()
         }
 
-        override fun getAllUsers(): Set<User> = DbAllUsers(db).execute()
+        override fun getAllUsers(): Set<User> = users
 
-        override fun addUser(user: User) {
+        override fun getUser(user: User): User {
+            val result = users.find { it.id == user.id }
+            return result ?: addUser(user)
+        }
+
+        override fun addUser(user: User): User {
+            users.add(user)
             if (DbAddUser(db).execute(user) > 0) {
                 bot.sendMsg(Reply(user.id, "Hi"))
             }
+            return user
         }
 
         override fun getMsg(user: User, message: String) {
