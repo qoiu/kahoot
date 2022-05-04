@@ -1,6 +1,7 @@
 package com.example.kahoot.presentation;
 
 import com.example.kahoot.domain.model.Kahoot;
+import com.example.kahoot.domain.model.KahootGame;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -9,6 +10,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextInputDialog;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,7 +52,7 @@ public class KahootListController extends BaseController<List<Kahoot>> {
         Optional<String> result = dialog.showAndWait();
 
         result.ifPresent(name -> {
-            Kahoot kahoot = new Kahoot(-1, name, new ArrayList<>(List.of()));
+            Kahoot kahoot = new Kahoot(-1, name, new ArrayList<>(Collections.emptyList()));
             if (kahoots.stream().noneMatch(kahoot1 -> kahoot1.getTitle().equals(name)))
                 nextScene(Scenes.CREATE, kahoot);
             else
@@ -59,7 +61,7 @@ public class KahootListController extends BaseController<List<Kahoot>> {
     }
 
     private void updateList() {
-        List<String> result = new ArrayList<>(List.of());
+        List<String> result = new ArrayList<>(Collections.emptyList());
         for (Kahoot kahoot : kahoots) {
             result.add(kahoot.getTitle());
         }
@@ -103,5 +105,9 @@ public class KahootListController extends BaseController<List<Kahoot>> {
 
     private Kahoot getKahoot() {
         return kahoots.get(list.getSelectionModel().getSelectedIndex());
+    }
+
+    public void onCheatClick(ActionEvent actionEvent) {
+        nextScene(Scenes.QUESTION_PREPARE, new KahootGame(getKahoot(), interactor.cheatConnection()));
     }
 }

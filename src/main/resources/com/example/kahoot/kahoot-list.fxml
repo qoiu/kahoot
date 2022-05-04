@@ -31,5 +31,10 @@
             </HBox.margin>
         </Button>
         <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onBackClick" text="Back"/>
+        <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#onCheatClick" text="Cheat" textFill="#ee0000">
+            <HBox.margin>
+                <Insets left="40.0"/>
+            </HBox.margin>
+        </Button>
     </HBox>
 </VBox>

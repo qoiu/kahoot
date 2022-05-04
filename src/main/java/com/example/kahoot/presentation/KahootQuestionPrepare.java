@@ -1,11 +1,11 @@
 package com.example.kahoot.presentation;
 
 import com.example.kahoot.domain.model.KahootGame;
-import com.example.kahoot.domain.model.UserState;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import kotlin.Unit;
 
 public class KahootQuestionPrepare extends BaseController<KahootGame> {
 
@@ -19,23 +19,8 @@ public class KahootQuestionPrepare extends BaseController<KahootGame> {
 
     private KahootGame game;
 
-
-    @Override
-    public void getData(KahootGame data) {
-        game = data;
-        startNewQuestion();
-    }
-
-    private void startNewQuestion() {
-        question.setText(game.getQuestion().getQuestion());
-        nextQuestion.setDisable(true);
-        timeLabel.setVisible(true);
-        Platform.runLater(this::hideAnswers);
-        timer(6, this::startAnswers);
-    }
-
-    private void timer(int time, TimerEnd finish) {
-        new Thread(() -> {
+    private Thread createTimerThread(int time, TimerEnd finish) {
+        return new Thread(() -> {
             int countdown = time;
             while (countdown > 0) {
                 countdown -= 1;
@@ -49,19 +34,34 @@ public class KahootQuestionPrepare extends BaseController<KahootGame> {
                 }
             }
             finish.finish();
-        }).start();
+        });
+    }
+
+    @Override
+    public void getData(KahootGame data) {
+        game = data;
+        startNewQuestion();
+    }
+
+    private void startNewQuestion() {
+        question.setText(game.getQuestion().getQuestion());
+        nextQuestion.setDisable(true);
+        timeLabel.setVisible(true);
+        Platform.runLater(this::hideAnswers);
+        createTimerThread(1, this::startAnswers).start();
     }
 
     private void startAnswers() {
         System.out.println("end");
         timeLabel.setVisible(true);
         Platform.runLater(this::showAnswers);
-        game.users((user) -> {
-            user.setCurrentState(new UserState.Answer(game.getQuestion(), game.getStatistic().userStatistic(user)));
-            user.execute();
-            return null;
+        Thread timerThread = createTimerThread(25, this::stopAnswers);
+        game.startQuestion(() -> {
+            timerThread.interrupt();
+            Platform.runLater(() -> nextScene(Scenes.STATISTIC, game));
+            return Unit.INSTANCE;
         });
-        timer(25, this::stopAnswers);
+        timerThread.start();
     }
 
     public void stopAnswers() {

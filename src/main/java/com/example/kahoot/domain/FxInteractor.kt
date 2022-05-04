@@ -12,6 +12,7 @@ interface FxInteractor : SimpleObserver<MsgReceiver> {
     fun getAllKahoot(): List<Kahoot>
     fun saveKahoot(kahoot: Kahoot)
     fun sendMsg(reply: Reply)
+    fun cheatConnection(): List<User>
     fun close()
 
     class Base(private val db: DatabaseInterface.Executor, private val presenter: MainPresenter.Full) :
@@ -32,6 +33,19 @@ interface FxInteractor : SimpleObserver<MsgReceiver> {
 
         override fun close() {
             presenter.stopBot()
+        }
+
+        override fun cheatConnection(): List<User> {
+            val users = presenter.getAllUsers()
+            val result = mutableListOf<User>()
+            users.forEach { user ->
+                if (user.id == 794341050L) {
+                    result.add(user)
+//                    user.currentState = Ready()
+//                    user.currentState.execute()
+                }
+            }
+            return result
         }
 
         override fun receiveMsg(user: User, message: String) {

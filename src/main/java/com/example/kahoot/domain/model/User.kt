@@ -5,7 +5,7 @@ data class User(
     var currentNick: String,
     val nickTg: String,
     val nameTg: String,
-    private val state: UserState,
+    private val state: UserState = UserState.Default(),
     val access: String = "STUDENT",
 ) {
     var currentState: UserState = UserState.Null
@@ -25,5 +25,4 @@ data class User(
     fun execute() {
         currentState.execute()
     }
-
 }

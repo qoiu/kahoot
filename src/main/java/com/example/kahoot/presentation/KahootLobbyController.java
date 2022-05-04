@@ -13,10 +13,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.text.Font;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class KahootLobbyController extends BaseController<Kahoot> implements MsgReceiver {
 
@@ -67,6 +64,6 @@ public class KahootLobbyController extends BaseController<Kahoot> implements Msg
     }
 
     public void onStartKahoot(ActionEvent actionEvent) {
-        nextScene(Scenes.QUESTION_PREPARE, new KahootGame(kahoot, users.stream().toList()));
+        nextScene(Scenes.QUESTION_PREPARE, new KahootGame(kahoot, new ArrayList<>(users)));
     }
 }

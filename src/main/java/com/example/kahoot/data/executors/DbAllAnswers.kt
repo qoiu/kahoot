@@ -10,7 +10,7 @@ class DbAllAnswers(private val db: DatabaseInterface.Executor) : DbExecutor.Get<
         val set = db.executeQuery(sql)
         try {
             while (set.next()) {
-                result.add(set.getString("text"))
+                result.add(set.getString("text") ?: "")
             }
         } catch (e: SQLException) {
             e.printStackTrace()

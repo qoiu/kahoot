@@ -46,7 +46,7 @@ sealed class UserState {
         }
     }
 
-    class Answer(private val question: KahootQuestion, private val statistic: UserStatistic.Add): UserState() {
+    class Answer(private val question: KahootQuestion, private val game: Game.Answer) : UserState() {
         override fun execute(message: String) {
             if (message.startsWith("/") && message[1].toString().toInt() in 0 until question.answers.size) {
                 presenter.postMsg(
@@ -56,7 +56,7 @@ sealed class UserState {
                     )
                 )
                 val answerId = message[1].toString().toInt()
-                statistic.addAnswer(question.correct==question.answers[answerId],10L)
+                game.addAnswer(user, question.answers[answerId])
                 user.currentState = NoReact
             }
         }
@@ -81,7 +81,7 @@ sealed class UserState {
         }
     }
 
-    object NoReact: UserState()
+    object NoReact : UserState()
 
     companion object {
         @JvmStatic
