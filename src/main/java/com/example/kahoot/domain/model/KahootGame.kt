@@ -31,7 +31,7 @@ class KahootGame(
             if (answer == s)
                 answerId = index
         }
-        statistic.userStatistic(user).addAnswer(
+        statistic.editUserStatistic(user).addAnswer(
             getQuestion().correct == answer,
             answerId,
             (Date().time - timer) / 10
@@ -51,10 +51,14 @@ class KahootGame(
         timer = Date().time
     }
 
-    fun forEachUser(action: (user: User) -> Unit) {
+    override fun forEachUser(action: (user: User) -> Unit) =
         users.forEach { action.invoke(it) }
-    }
+
+    override fun forEachAnsweredQuestion(action: (id: Int, question: KahootQuestion) -> Unit) =
+        kahoot.questions.forEachIndexed { id, q -> if (id <= question) action(id, q) }
+
 
     override fun isLastQuestion() = question < kahoot.questions.size
     override fun statistic(): GameStatistic = statistic
+    override fun statistic(user: User): UserStatistic.Read = statistic.readUserStatistic(user)
 }

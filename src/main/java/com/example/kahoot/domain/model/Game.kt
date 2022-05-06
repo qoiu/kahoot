@@ -6,6 +6,8 @@ interface Game {
     fun nextQuestion()
     fun startQuestion(stoppedAction: () -> Unit)
     fun isLastQuestion(): Boolean
+    fun forEachUser(action: (user: User) -> Unit)
+    fun forEachAnsweredQuestion(action: (id: Int, question: KahootQuestion)->Unit)
 
     interface Answer {
         fun addAnswer(user: User, answer: String)
@@ -13,6 +15,7 @@ interface Game {
 
     interface Statistic {
         fun statistic(): GameStatistic
+        fun statistic(user: User): UserStatistic.Read
     }
 
     interface Full : Game, Statistic, Answer

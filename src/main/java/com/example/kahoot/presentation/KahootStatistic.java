@@ -5,26 +5,20 @@ import com.example.kahoot.presentation.model.ChartGraphic;
 import com.example.kahoot.presentation.model.SingleChartGraphic;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.geometry.Insets;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.paint.Color;
-
-import java.util.List;
+import kotlin.Unit;
 
 public class KahootStatistic extends BaseController<KahootGame> {
 
     public Label question;
     public BarChart<String,Integer> chart;
     public Button nextQuestion;
-    public BarChart timeChart;
+    public BarChart<String,Double> timeChart;
     public Label statistic_label;
     public BarChart score_chart;
     public CategoryAxis chartAxis;
@@ -32,29 +26,27 @@ public class KahootStatistic extends BaseController<KahootGame> {
     public NumberAxis timeChartYAxis;
 
     private KahootGame game;
-    private List<Label> answers;
-    private final Background background = new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY));
 
     @Override
     public void getData(KahootGame data) {
         super.getData(data);
         game = data;
         Platform.runLater(()-> question.setText(game.getQuestion().getQuestion()));
-        correctAnswerChart();
+        setCorrectAnswerChart();
+        setTimeChart();
         SingleChartGraphic.Add scoreChart = new SingleChartGraphic.Base();
         game.forEachUser((user)->{
-            scoreChart.addObj(user.getCurrentNick(),game.statistic().userStatistic(user).score());
+            scoreChart.addObj(user.getCurrentNick(),game.statistic().editUserStatistic(user).score());
             return null;
         });
         Platform.runLater(() -> {
 //            timeChart.setCategoryGap(20);
-            timeChart.getData().addAll(game.statistic().userTimeChart(game.getQuestions()).toSeries());
             score_chart.getData().addAll(scoreChart);
 //            thread().start();
         });
     }
 
-    private void correctAnswerChart(){
+    private void setCorrectAnswerChart(){
         ChartGraphic.Add<String, Integer> chartGraphic = new ChartGraphic.Base<>();
         for (int i = 0; i < game.getQuestion().answersCount(); i++) {
             String answer = game.getQuestion().getAnswers().get(i);
@@ -69,6 +61,20 @@ public class KahootStatistic extends BaseController<KahootGame> {
             chart.layout();
             chart.getData().addAll(chartGraphic.toSeries());
         });
+    }
+
+    private void setTimeChart(){
+        ChartGraphic.Add<String,Double> timeGraphic = new ChartGraphic.Base<>();
+        game.forEachUser((user)->{
+            timeGraphic.addGroup(user.getCurrentNick());
+            game.forEachAnsweredQuestion((id,question)-> {
+                timeGraphic.addObj(question.getQuestion(), game.statistic(user).getTime(id) / 10.0);
+                return Unit.INSTANCE;
+            });
+            timeGraphic.addObj("Total",game.statistic(user).getTotalTime() / 10.0);
+            return Unit.INSTANCE;
+        });
+        Platform.runLater(()-> timeChart.getData().addAll(timeGraphic.toSeries()));
     }
 
     Thread thread() {

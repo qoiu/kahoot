@@ -4,7 +4,8 @@ import com.example.kahoot.presentation.model.ChartGraphic
 
 interface GameStatistic {
 
-    fun userStatistic(user: User): UserStatistic.Add
+    fun editUserStatistic(user: User): UserStatistic.Add
+    fun readUserStatistic(user: User): UserStatistic.Read
 
     /**
      *show is all users answer question
@@ -36,7 +37,8 @@ interface GameStatistic {
             }
         }
 
-        override fun userStatistic(user: User): UserStatistic.Add = getStatistic(user)
+        override fun editUserStatistic(user: User): UserStatistic.Add = getStatistic(user)
+        override fun readUserStatistic(user: User): UserStatistic.Read = getStatistic(user)
 
         private fun getStatistic(user: User): UserStatistic.Full {
             if (!statistic.containsKey(user) || statistic[user] == null) {
