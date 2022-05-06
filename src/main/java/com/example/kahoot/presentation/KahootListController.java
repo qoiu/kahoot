@@ -4,10 +4,10 @@ import com.example.kahoot.domain.model.Kahoot;
 import com.example.kahoot.domain.model.KahootGame;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.layout.HBox;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,14 +19,10 @@ public class KahootListController extends BaseController<List<Kahoot>> {
     private final List<Kahoot> kahoots = new ArrayList<>();
     public Button editBtn;
     public Button startBtn;
+    public HBox cheatPane;
 
-
-    public void itemClick(ListView.EditEvent<String> editEvent) {
-        editEvent.getNewValue();
-    }
-
-    public void onNewClick(ActionEvent actionEvent) {
-        showInputTextDialog(actionEvent);
+    public void onNewClick() {
+        showInputTextDialog();
     }
 
     @Override
@@ -39,11 +35,11 @@ public class KahootListController extends BaseController<List<Kahoot>> {
         nextScene(Scenes.MAIN);
     }
 
-    private void showInputTextDialog(ActionEvent actionEvent) {
-        showInputTextDialog(actionEvent, "Please enter new kahoot title:");
+    private void showInputTextDialog() {
+        showInputTextDialog("Please enter new kahoot title:");
     }
 
-    private void showInputTextDialog(ActionEvent actionEvent, String title) {
+    private void showInputTextDialog(String title) {
         TextInputDialog dialog = new TextInputDialog("New kahoot");
         dialog.setTitle("Kahoot");
         dialog.setHeaderText(title);
@@ -56,7 +52,7 @@ public class KahootListController extends BaseController<List<Kahoot>> {
             if (kahoots.stream().noneMatch(kahoot1 -> kahoot1.getTitle().equals(name)))
                 nextScene(Scenes.CREATE, kahoot);
             else
-                showInputTextDialog(actionEvent, "Kahoot " + name + " already exist. Choose another name");
+                showInputTextDialog("Kahoot " + name + " already exist. Choose another name");
         });
     }
 
@@ -77,6 +73,7 @@ public class KahootListController extends BaseController<List<Kahoot>> {
     @Override
     public void init() {
         super.init();
+        cheatPane.setVisible(interactor.isDebugVersion());
         kahoots.addAll(interactor.getAllKahoot());
         updateList();
         list.getSelectionModel().selectedItemProperty().addListener(getListener());
@@ -91,15 +88,15 @@ public class KahootListController extends BaseController<List<Kahoot>> {
         };
     }
 
-    public void onEditKahootAction(ActionEvent actionEvent) {
+    public void onEditKahootAction() {
         nextScene(Scenes.CREATE, getKahoot());
     }
 
-    public void onBackClick(ActionEvent actionEvent) {
+    public void onBackClick() {
         usualClose();
     }
 
-    public void onStartKahoot(ActionEvent actionEvent) {
+    public void onStartKahoot() {
         nextScene(Scenes.LOBBY, getKahoot());
     }
 
@@ -107,7 +104,11 @@ public class KahootListController extends BaseController<List<Kahoot>> {
         return kahoots.get(list.getSelectionModel().getSelectedIndex());
     }
 
-    public void onCheatClick(ActionEvent actionEvent) {
+    public void onCheatClick() {
         nextScene(Scenes.QUESTION_PREPARE, new KahootGame(getKahoot(), interactor.cheatConnection()));
+    }
+
+    public void onCheatFinishClick() {
+        nextScene(Scenes.FINISH, new KahootGame(getKahoot(), interactor.cheatConnection()));
     }
 }

@@ -26,9 +26,13 @@ interface UserStatistic {
         private var strike = 0
 
         override fun addAnswer(isCorrect: Boolean, answerId: Int, time: Long) {
-            list.add(QuestionStatistic.Base(isCorrect, answerId, time))
             updateStrike(isCorrect)
-            score += ((roundTime - time) * (1 + (0.01 * strike))).toInt()
+            val additionalScore = if (isCorrect)
+                ((roundTime * 100 - time) * (1 + (0.01 * strike))).toInt()
+            else
+                0
+            score += additionalScore
+            list.add(QuestionStatistic.Base(isCorrect, answerId, time, additionalScore))
         }
 
         override fun noAnswer() {
@@ -68,10 +72,12 @@ interface UserStatistic {
         }
 
         sealed class QuestionStatistic {
+
             data class Base(
                 val correct: Boolean,
                 val answerId: Int,
-                val time: Long
+                val time: Long,
+                val score: Int = 0
             ) : QuestionStatistic()
 
             object NoAnswer : QuestionStatistic()

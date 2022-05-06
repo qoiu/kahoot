@@ -1,6 +1,6 @@
 package com.example.kahoot.presentation;
 
-import com.example.kahoot.domain.model.KahootGame;
+import com.example.kahoot.domain.model.Game;
 import com.example.kahoot.presentation.model.ChartGraphic;
 import javafx.application.Platform;
 import javafx.scene.chart.BarChart;
@@ -8,9 +8,8 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import kotlin.Unit;
 
-public class KahootStatistic extends BaseController<KahootGame> {
+public class KahootStatistic extends BaseController<Game.Full> {
 
     public Label question;
     public BarChart<String, Integer> chart;
@@ -22,12 +21,14 @@ public class KahootStatistic extends BaseController<KahootGame> {
     public NumberAxis chartYAxis;
     public NumberAxis timeChartYAxis;
 
-    private KahootGame game;
+    private Game.Full game;
 
     @Override
-    public void getData(KahootGame data) {
+    public void getData(Game.Full data) {
         game = data;
         Platform.runLater(() -> question.setText(game.getQuestion().getQuestion()));
+        if (game.isLastQuestion())
+            Platform.runLater(() -> nextQuestion.setText("Finish"));
         setCorrectAnswerChart();
         setTimeChart();
         setScoreChart();
@@ -52,31 +53,31 @@ public class KahootStatistic extends BaseController<KahootGame> {
 
     private void setTimeChart() {
         ChartGraphic.Add<String, Double> timeGraphic = new ChartGraphic.Base<>();
-        game.forEachUser((user) -> {
+        game.forEachUser(user -> {
             timeGraphic.addGroup(user.getCurrentNick());
-            game.forEachAnsweredQuestion((id, question) -> {
-                timeGraphic.addObj(question.getQuestion(), game.statistic(user).getTime(id) / 10.0);
-                return Unit.INSTANCE;
-            });
+            game.forEachAnsweredQuestion((id, question) ->
+                    timeGraphic.addObj(question.getQuestion(), game.statistic(user).getTime(id) / 10.0));
             timeGraphic.addObj("Total", game.statistic(user).getTotalTime() / 10.0);
-            return Unit.INSTANCE;
         });
         Platform.runLater(() -> timeChart.getData().addAll(timeGraphic.toSeries()));
     }
 
     private void setScoreChart() {
         ChartGraphic.Add<String, Integer> scoreChart = new ChartGraphic.Base<>();
-        game.forEachUser((user) -> {
+        game.forEachUser(user -> {
             scoreChart.addGroup(user.getCurrentNick());
             int score = game.statistic(user).score();
             scoreChart.addObj(user.getCurrentNick(), score);
-            return Unit.INSTANCE;
         });
         Platform.runLater(() -> score_chart.getData().addAll(scoreChart.toSeries()));
     }
 
     public void onNextQuestion() {
-        game.nextQuestion();
-        nextScene(Scenes.QUESTION_PREPARE, game);
+        if (game.isLastQuestion()) {
+            nextScene(Scenes.FINISH, game);
+        } else {
+            game.nextQuestion();
+            nextScene(Scenes.QUESTION_PREPARE, game);
+        }
     }
 }

@@ -35,14 +35,20 @@ sealed class UserState {
             presenter.postMsg(
                 Reply(
                     user.id,
-                    "Now you ready to start\nYour name: **${user.currentNick}**\nIf you want, you may enter another name\n\nPlease wait for start...",
+                    "Now you ready to start\nYour name: <b>${user.currentNick}</b>\nIf you want, you may enter another name\n\nPlease wait for start...",
                     listOf(
-                        Btn(user.currentNick, user.currentNick),
                         Btn(user.nickTg, user.nickTg),
                         Btn(user.nameTg, user.nameTg)
                     )
                 )
             )
+        }
+    }
+
+    class QuestionResult(private val question: KahootQuestion) : UserState(){
+        override fun execute() {
+            val text =  "${question.question}\nCorrect answer: ${question.question}!"
+            presenter.postMsg(Reply(user.id,text))
         }
     }
 

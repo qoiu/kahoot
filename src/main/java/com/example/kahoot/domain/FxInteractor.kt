@@ -13,6 +13,7 @@ interface FxInteractor : SimpleObserver<MsgReceiver> {
     fun saveKahoot(kahoot: Kahoot)
     fun sendMsg(reply: Reply)
     fun cheatConnection(): List<User>
+    fun isDebugVersion(): Boolean
     fun close()
 
     class Base(private val db: DatabaseInterface.Executor, private val presenter: MainPresenter.Full) :
@@ -41,15 +42,19 @@ interface FxInteractor : SimpleObserver<MsgReceiver> {
             users.forEach { user ->
                 if (user.id == 794341050L) {
                     result.add(user)
-//                    user.currentState = Ready()
-//                    user.currentState.execute()
                 }
             }
             return result
         }
 
+        override fun isDebugVersion(): Boolean = DEBUG
+
         override fun receiveMsg(user: User, message: String) {
             receiverList.forEach { it.receiveMsg(user, message) }
+        }
+
+        private companion object {
+            const val DEBUG = true
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.example.kahoot.domain.model
 
-import com.example.kahoot.presentation.model.ChartGraphic
+import kotlin.random.Random
 
 interface GameStatistic {
 
@@ -20,14 +20,9 @@ interface GameStatistic {
 
     fun getCorrectAnswers(answer: Int): Int
 
-    /**
-     * map userTime to chart
-     * should be separate mapper :(
-     */
-    fun userTimeChart(questions: List<String>): ChartGraphic<*, *>
+    fun sortedScoreboardUser(): List<User>
 
-
-    class Base(private val users: List<User>, private val roundTime: Int) : GameStatistic {
+    open class Base(private val users: List<User>, private val roundTime: Int) : GameStatistic {
         private val statistic = HashMap<User, UserStatistic.Full>()
         private var currentQuestion = 0
 
@@ -69,16 +64,23 @@ interface GameStatistic {
             return result
         }
 
-        override fun userTimeChart(questions: List<String>): ChartGraphic<*, *> {
-            val chart = ChartGraphic.Base<Double>()
-            users.forEach { user ->
-                chart.addGroup(user.currentNick)
-                for (i in 0..currentQuestion) {
-                    chart.addObj(questions[i], getStatistic(user).getTime(i) / 10.0)
-                }
-                chart.addObj("Total", getStatistic(user).getTotalTime() / 10.0)
+        override fun sortedScoreboardUser(): List<User> = statistic.keys.sortedBy { getStatistic(it).score() }
+    }
+
+    class Test : Base(users, 10) {
+        init {
+            users.forEach {
+                editUserStatistic(it).addAnswer(true, 1, Random.nextLong(200))
             }
-            return chart
         }
+    }
+
+    private companion object {
+        val users = listOf(
+            User(1, "Vasya"),
+            User(2, "Petya"),
+            User(3, "Kolya"),
+            User(4, "Vanka"),
+        )
     }
 }

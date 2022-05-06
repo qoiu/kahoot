@@ -54,18 +54,24 @@ class KahootGame(
 
     override fun endQuestion() {
         users.forEach { user ->
-            statistic.editUserStatistic(user).noAnswer()
+            user.currentState = UserState.QuestionResult(getQuestion())
+            if (statistic.readUserStatistic(user)
+                    .getStatistic(question) is UserStatistic.Base.QuestionStatistic.NoAnswer
+            )
+                statistic.editUserStatistic( user).noAnswer()
         }
     }
 
-    override fun forEachUser(action: (user: User) -> Unit) =
-        users.forEach { action.invoke(it) }
+    override fun forEachUser(action: Game.ForEachUser) =
+        users.forEach { action.withUser(it) }
 
-    override fun forEachAnsweredQuestion(action: (id: Int, question: KahootQuestion) -> Unit) =
-        kahoot.questions.forEachIndexed { id, q -> if (id <= question) action(id, q) }
+    override fun forEachAnsweredQuestion(action: Game.ForEachQuestion) =
+        kahoot.questions.forEachIndexed { id, q -> if (id <= question) action.withQuestion(id, q) }
+
+    override fun users(): List<User> = users
 
 
-    override fun isLastQuestion() = question < kahoot.questions.size
+    override fun isLastQuestion() = question >= kahoot.questions.size - 1
     override fun statistic(): GameStatistic = statistic
     override fun statistic(user: User): UserStatistic.Read = statistic.readUserStatistic(user)
 

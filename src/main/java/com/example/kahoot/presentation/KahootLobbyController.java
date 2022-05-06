@@ -7,18 +7,18 @@ import com.example.kahoot.domain.model.User;
 import com.example.kahoot.domain.model.UserState;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.text.Font;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class KahootLobbyController extends BaseController<Kahoot> implements MsgReceiver {
 
     public Label pinLabel;
-    public ListView list;
+    public ListView<String> list;
     private Kahoot kahoot;
     private final Set<User> users = new HashSet<>();
 
@@ -51,7 +51,7 @@ public class KahootLobbyController extends BaseController<Kahoot> implements Msg
 
     @Override
     public void receiveMsg(@NotNull User user, @NotNull String message) {
-        if (message.equals(pin + "")) {
+        if (message.equals(pin + "") && user.getCurrentState().getClass() == UserState.Default.class) {
             users.add(user);
             user.setCurrentState(new UserState.Ready());
             user.getCurrentState().execute();
@@ -60,10 +60,11 @@ public class KahootLobbyController extends BaseController<Kahoot> implements Msg
     }
 
     private void updateList() {
-        Platform.runLater(() -> list.setItems(FXCollections.observableList(Arrays.asList(users.stream().map(User::getCurrentNick).toArray()))));
+        List<String> names = users.stream().map(User::getCurrentNick).collect(Collectors.toList());
+        Platform.runLater(() -> list.setItems(FXCollections.observableList(names)));
     }
 
-    public void onStartKahoot(ActionEvent actionEvent) {
+    public void onStartKahoot() {
         nextScene(Scenes.QUESTION_PREPARE, new KahootGame(kahoot, new ArrayList<>(users)));
     }
 }

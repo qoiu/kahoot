@@ -18,9 +18,9 @@ abstract class BaseController<T> : DataReceiver<T> {
         CREATE("kahoot-sizable.fxml"),
         LIST("kahoot-list.fxml"),
         LOBBY("kahoot-lobby.fxml"),
-        GAME("kahoot-game.fxml"),
         STATISTIC("kahoot-statistic.fxml"),
-        QUESTION_PREPARE("kahoot-question-prepare.fxml");
+        QUESTION_PREPARE("kahoot-question-prepare.fxml"),
+        FINISH("kahoot-finish.fxml");
     }
 
     private lateinit var fxmlLoader: FXMLLoader
@@ -37,8 +37,8 @@ abstract class BaseController<T> : DataReceiver<T> {
         val controller = fxmlLoader.getController<BaseController<Any>>()
         controller.interactor = this.interactor
         controller.stage = this.stage
-        if(!stage.isMaximized)
-            stage.isMaximized=true
+        if (!stage.isMaximized)
+            stage.isMaximized = true
         scene.window.height = stage.height
         scene.window.width = stage.width
         controller.init()
