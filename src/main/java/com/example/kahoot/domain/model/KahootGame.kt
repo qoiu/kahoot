@@ -6,14 +6,15 @@ import java.util.*
 class KahootGame(
     private val kahoot: Kahoot,
     private val users: List<User>,
-    private val statistic: GameStatistic = GameStatistic.Base(users)
+    private val statistic: GameStatistic = GameStatistic.Base(users, ROUND_TIME)
 ) : Game.Full {
 
-    constructor(kahoot: Kahoot, users: List<User>) : this(kahoot, users, GameStatistic.Base(users))
+    constructor(kahoot: Kahoot, users: List<User>) : this(kahoot, users, GameStatistic.Base(users, ROUND_TIME))
 
     private var question: Int = 0
     private var timer: Long = 0
     private var stoppedAction: () -> Unit = {}
+    override fun getRoundTime(): Int = ROUND_TIME
 
     override fun getQuestion() = kahoot.questions[question]
     override fun getQuestions(): List<String> = kahoot.questions.map { it.question }
@@ -51,6 +52,12 @@ class KahootGame(
         timer = Date().time
     }
 
+    override fun endQuestion() {
+        users.forEach { user ->
+            statistic.editUserStatistic(user).noAnswer()
+        }
+    }
+
     override fun forEachUser(action: (user: User) -> Unit) =
         users.forEach { action.invoke(it) }
 
@@ -61,4 +68,8 @@ class KahootGame(
     override fun isLastQuestion() = question < kahoot.questions.size
     override fun statistic(): GameStatistic = statistic
     override fun statistic(user: User): UserStatistic.Read = statistic.readUserStatistic(user)
+
+    private companion object {
+        const val ROUND_TIME = 15
+    }
 }

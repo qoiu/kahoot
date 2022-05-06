@@ -27,13 +27,13 @@ interface GameStatistic {
     fun userTimeChart(questions: List<String>): ChartGraphic<*, *>
 
 
-    class Base(private val users: List<User>) : GameStatistic {
+    class Base(private val users: List<User>, private val roundTime: Int) : GameStatistic {
         private val statistic = HashMap<User, UserStatistic.Full>()
         private var currentQuestion = 0
 
         init {
             users.forEach { user ->
-                statistic[user] = UserStatistic.Base()
+                statistic[user] = UserStatistic.Base(roundTime)
             }
         }
 
@@ -42,7 +42,7 @@ interface GameStatistic {
 
         private fun getStatistic(user: User): UserStatistic.Full {
             if (!statistic.containsKey(user) || statistic[user] == null) {
-                statistic[user] = UserStatistic.Base()
+                statistic[user] = UserStatistic.Base(roundTime)
             }
             return statistic[user]!!
         }

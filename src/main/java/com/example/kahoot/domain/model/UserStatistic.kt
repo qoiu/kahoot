@@ -3,11 +3,12 @@ package com.example.kahoot.domain.model
 interface UserStatistic {
     interface Add {
         fun addAnswer(isCorrect: Boolean, answerId: Int, time: Long = 10L)
-        fun score(): Int
+        fun noAnswer()
     }
 
     interface Read : Time {
         fun getStatistic(questionId: Int): Base.QuestionStatistic
+        fun score(): Int
     }
 
     interface Time {
@@ -19,7 +20,7 @@ interface UserStatistic {
     interface Full : Read, Add, Time, UserStatistic
 
 
-    open class Base : Full {
+    open class Base(private val roundTime: Int) : Full {
         protected val list = mutableListOf<QuestionStatistic>()
         private var score = 0
         private var strike = 0
@@ -27,10 +28,15 @@ interface UserStatistic {
         override fun addAnswer(isCorrect: Boolean, answerId: Int, time: Long) {
             list.add(QuestionStatistic.Base(isCorrect, answerId, time))
             updateStrike(isCorrect)
-            score += ((GLOBAL_TIME - time) * (1 + (0.01 * strike))).toInt()
+            score += ((roundTime - time) * (1 + (0.01 * strike))).toInt()
         }
 
-        override fun score(): Int = score
+        override fun noAnswer() {
+            list.add(QuestionStatistic.NoAnswer)
+            updateStrike(false)
+        }
+
+        override fun score(): Int = score / 10
 
         override fun getTotalTime(): Double {
             var result = 0.0
@@ -80,13 +86,9 @@ interface UserStatistic {
                         strike++
             }
         }
-
-        private companion object {
-            const val GLOBAL_TIME = 2500
-        }
     }
 
-    class Test : Base() {
+    class Test : Base(15) {
         fun get() = list.toList()
     }
 

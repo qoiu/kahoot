@@ -31,7 +31,7 @@
                 <NumberAxis fx:id="chartYAxis" autoRanging="false" minorTickCount="1" side="LEFT" tickUnit="1.0" upperBound="2.0" />
             </yAxis>
         </BarChart>
-        <BarChart fx:id="timeChart" barGap="1.0" categoryGap="1.0" legendVisible="false" maxHeight="1.7976931348623157E308" title="Elapsed time" HBox.hgrow="ALWAYS">
+        <BarChart fx:id="timeChart" barGap="1.0" categoryGap="1.0" maxHeight="1.7976931348623157E308" title="Elapsed time" HBox.hgrow="ALWAYS">
             <xAxis>
                 <CategoryAxis animated="false" label="User" side="BOTTOM" />
             </xAxis>

@@ -55,7 +55,7 @@ public class KahootQuestionPrepare extends BaseController<KahootGame> {
         System.out.println("end");
         timeLabel.setVisible(true);
         Platform.runLater(this::showAnswers);
-        Thread timerThread = createTimerThread(25, this::stopAnswers);
+        Thread timerThread = createTimerThread(game.getRoundTime(), this::stopAnswers);
         game.startQuestion(() -> {
             timerThread.interrupt();
             return Unit.INSTANCE;
@@ -64,6 +64,7 @@ public class KahootQuestionPrepare extends BaseController<KahootGame> {
     }
 
     public void stopAnswers() {
+        game.endQuestion();
         Platform.runLater(() -> nextScene(Scenes.STATISTIC, game));
         nextQuestion.setDisable(false);
         if (!game.isLastQuestion()) {

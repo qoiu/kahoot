@@ -1,13 +1,15 @@
 package com.example.kahoot.domain.model
 
 interface Game {
+    fun getRoundTime(): Int
     fun getQuestion(): KahootQuestion
     fun getQuestions(): List<String>
     fun nextQuestion()
     fun startQuestion(stoppedAction: () -> Unit)
+    fun endQuestion()
     fun isLastQuestion(): Boolean
     fun forEachUser(action: (user: User) -> Unit)
-    fun forEachAnsweredQuestion(action: (id: Int, question: KahootQuestion)->Unit)
+    fun forEachAnsweredQuestion(action: (id: Int, question: KahootQuestion) -> Unit)
 
     interface Answer {
         fun addAnswer(user: User, answer: String)
@@ -27,7 +29,7 @@ interface Game {
             User(0, "a", "a", "s", UserState.Null)
         )
 
-        fun getGame(statistic: GameStatistic = GameStatistic.Base(users)): KahootGame {
+        fun getGame(statistic: GameStatistic = GameStatistic.Base(users, 15)): KahootGame {
             return KahootGame(
                 Kahoot(
                     0, "kahoot", mutableListOf(
