@@ -1,6 +1,6 @@
 package com.example.kahoot.domain.model
 
-import com.example.kahoot.domain.model.statistic.ChartGraphic
+import com.example.kahoot.presentation.model.ChartGraphic
 
 interface GameStatistic {
 
@@ -18,11 +18,12 @@ interface GameStatistic {
 
 
     fun getCorrectAnswers(answer: Int): Int
+
     /**
      * map userTime to chart
      * should be separate mapper :(
      */
-    fun userTimeChart(questions: List<String>): ChartGraphic
+    fun userTimeChart(questions: List<String>): ChartGraphic<*, *>
 
 
     class Base(private val users: List<User>) : GameStatistic {
@@ -60,20 +61,20 @@ interface GameStatistic {
             var result = 0
             users.forEach { user ->
                 val stat = getStatistic(user).getStatistic(currentQuestion)
-                if(stat is UserStatistic.Base.QuestionStatistic.Base && stat.answerId==answer)
+                if (stat is UserStatistic.Base.QuestionStatistic.Base && stat.answerId == answer)
                     result++
             }
             return result
         }
 
-        override fun userTimeChart(questions: List<String>): ChartGraphic {
-            val chart = ChartGraphic.Base()
+        override fun userTimeChart(questions: List<String>): ChartGraphic<*, *> {
+            val chart = ChartGraphic.Base<Double>()
             users.forEach { user ->
                 chart.addGroup(user.currentNick)
                 for (i in 0..currentQuestion) {
-                    chart.addObj(questions[i], getStatistic(user).getTime(i)/10.0)
+                    chart.addObj(questions[i], getStatistic(user).getTime(i) / 10.0)
                 }
-                chart.addObj("Total", getStatistic(user).getTotalTime()/10.0)
+                chart.addObj("Total", getStatistic(user).getTotalTime() / 10.0)
             }
             return chart
         }

@@ -30,6 +30,7 @@ public class KahootQuestionPrepare extends BaseController<KahootGame> {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException ignored) {
+                    countdown=0;
                 }
             }
             finish.finish();
@@ -57,13 +58,13 @@ public class KahootQuestionPrepare extends BaseController<KahootGame> {
         Thread timerThread = createTimerThread(25, this::stopAnswers);
         game.startQuestion(() -> {
             timerThread.interrupt();
-            Platform.runLater(() -> nextScene(Scenes.STATISTIC, game));
             return Unit.INSTANCE;
         });
         timerThread.start();
     }
 
     public void stopAnswers() {
+        Platform.runLater(() -> nextScene(Scenes.STATISTIC, game));
         nextQuestion.setDisable(false);
         if (!game.isLastQuestion()) {
             nextQuestion.setDisable(true);

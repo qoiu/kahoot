@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.kahoot.presentation.KahootStatistic">
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="859.0" prefWidth="1164.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.kahoot.presentation.KahootStatistic">
     <Label fx:id="question" alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
         <VBox.margin>
             <Insets />
@@ -20,37 +20,39 @@
         </font>
     </Label>
     <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-        <BarChart fx:id="chart" maxHeight="1.7976931348623157E308" title="Correct answers" HBox.hgrow="ALWAYS">
+        <BarChart fx:id="chart" maxHeight="1.7976931348623157E308" title="Answers" HBox.hgrow="ALWAYS">
             <xAxis>
-                <CategoryAxis side="BOTTOM" />
+                <CategoryAxis fx:id="chartAxis" animated="false" side="BOTTOM">
+               <tickLabelFont>
+                  <Font size="18.0" />
+               </tickLabelFont></CategoryAxis>
             </xAxis>
             <yAxis>
-                <NumberAxis side="LEFT" tickLabelGap="50.0" />
+                <NumberAxis fx:id="chartYAxis" autoRanging="false" minorTickCount="1" side="LEFT" tickUnit="1.0" upperBound="2.0" />
             </yAxis>
         </BarChart>
         <BarChart fx:id="timeChart" barGap="1.0" categoryGap="1.0" legendVisible="false" maxHeight="1.7976931348623157E308" title="Elapsed time" HBox.hgrow="ALWAYS">
             <xAxis>
-                <CategoryAxis label="User" side="BOTTOM" />
+                <CategoryAxis animated="false" label="User" side="BOTTOM" />
             </xAxis>
             <yAxis>
-                <NumberAxis label="Time" side="LEFT" upperBound="2.0" />
+                <NumberAxis fx:id="timeChartYAxis" label="Time" side="LEFT" upperBound="2.0" />
             </yAxis>
         </BarChart>
     </HBox>
     <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
         <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
-            <Label fx:id="statistic_label" alignment="CENTER" contentDisplay="CENTER"
-                   maxWidth="1.7976931348623157E308" text="Scores">
+            <Label fx:id="statistic_label" alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" text="Scores">
                 <font>
-                    <Font size="45.0"/>
+                    <Font size="45.0" />
                 </font>
             </Label>
             <BarChart fx:id="score_chart" VBox.vgrow="ALWAYS">
                 <xAxis>
-                    <CategoryAxis side="BOTTOM"/>
+                    <CategoryAxis animated="false" side="BOTTOM" />
                 </xAxis>
                 <yAxis>
-                    <NumberAxis side="LEFT"/>
+                    <NumberAxis side="LEFT" />
                 </yAxis>
             </BarChart>
         </VBox>

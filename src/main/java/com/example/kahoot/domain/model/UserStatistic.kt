@@ -21,8 +21,8 @@ interface UserStatistic {
 
     open class Base : Full {
         protected val list = mutableListOf<QuestionStatistic>()
-        var score = 0
-        var strike = 0
+        private var score = 0
+        private var strike = 0
 
         override fun addAnswer(isCorrect: Boolean, answerId: Int, time: Long) {
             list.add(QuestionStatistic.Base(isCorrect, answerId, time))
@@ -82,7 +82,7 @@ interface UserStatistic {
         }
 
         private companion object {
-            const val GLOBAL_TIME = 25
+            const val GLOBAL_TIME = 2500
         }
     }
 

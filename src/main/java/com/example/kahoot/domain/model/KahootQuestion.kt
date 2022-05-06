@@ -7,4 +7,10 @@ data class KahootQuestion(
 ) {
 
     override fun toString(): String = "$question\n${answers} \n Correct answer: $correct"
+
+    fun answersCount(): Int{
+        var count = 0
+        answers.forEach { if (it!="") count++  }
+        return count
+    }
 }
