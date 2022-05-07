@@ -2,6 +2,7 @@ package com.example.kahoot.domain.presesnter
 
 import com.example.kahoot.bot.Bot
 import com.example.kahoot.data.DatabaseBase
+import com.example.kahoot.data.executors.DbAddMessage
 import com.example.kahoot.data.executors.DbAddUser
 import com.example.kahoot.data.executors.DbAllUsers
 import com.example.kahoot.domain.BaseObserver
@@ -17,7 +18,7 @@ interface MainPresenter : SimpleObserver<MsgReceiver> {
         fun getMsg(user: User, message: String)
         fun postMsg(message: Reply, clear: Boolean = true)
 
-        class Test(): MessengerActions{
+        class Test : MessengerActions{
             private var message: String=""
             private var reply: Reply = Reply(0,"empty")
 
@@ -66,14 +67,6 @@ interface MainPresenter : SimpleObserver<MsgReceiver> {
         }
 
         override fun lostConnection() {
-//            DbMapperRestartApp(db).map(null)
-//            for (id in tables.getPlayersId()) {
-//                if (tables.getGame(id) != null) {
-//                    tables.getGame(id).playerLeaveGame(UserMessaged(id, "somePlayer"))
-//                    tables.setGameEngine(id, null)
-//                }
-//            }
-//            tables.clearTables()
         }
 
         override fun getAllUsers(): Set<User> = users
@@ -92,6 +85,7 @@ interface MainPresenter : SimpleObserver<MsgReceiver> {
         }
 
         override fun getMsg(user: User, message: String) {
+            DbAddMessage(db).execute(Reply(user.id,message))
             user.execute(message)
             receiverList.forEach { it.receiveMsg(user, message) }
         }

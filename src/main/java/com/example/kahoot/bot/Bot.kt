@@ -73,6 +73,7 @@ interface Bot {
             val msg = ReplyToMessageMapper().map(reply)
             val message = execute(msg)
             chatBotHistory[reply.userID]?.saveMsg(message)
+            clearMsgFromBotBeforeMessage(message)
         }
 
         override fun clearChat(id: Long, user: Boolean, bot: Boolean) {
@@ -85,8 +86,7 @@ interface Bot {
         }
 
         private fun clearMsgFromBotBeforeMessage(message: Message) {
-            for (i in 1..100) {
-//                deleteMsg(message.chatId.toString(), message.messageId - i)
+            for (i in 1..10) {
                 if (!deleteMsg(message.chatId.toString(), message.messageId - i))
                     break
             }

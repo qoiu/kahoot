@@ -2,7 +2,6 @@ package com.example.kahoot.presentation;
 
 import com.example.kahoot.domain.model.KahootGame;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import kotlin.Unit;
@@ -48,7 +47,8 @@ public class KahootQuestionPrepare extends BaseController<KahootGame> {
         nextQuestion.setDisable(true);
         timeLabel.setVisible(true);
         Platform.runLater(this::hideAnswers);
-        createTimerThread(1, this::startAnswers).start();
+        int time = interactor.isDebugVersion()?1:5;
+        createTimerThread(time, this::startAnswers).start();
     }
 
     private void startAnswers() {
@@ -90,7 +90,7 @@ public class KahootQuestionPrepare extends BaseController<KahootGame> {
         answ4.setVisible(false);
     }
 
-    public void onNextQuestion(ActionEvent actionEvent) {
+    public void onNextQuestion() {
         game.nextQuestion();
         startNewQuestion();
     }

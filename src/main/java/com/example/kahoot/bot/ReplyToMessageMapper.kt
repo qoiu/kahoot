@@ -22,10 +22,12 @@ class ReplyToMessageMapper : Mapper.Base<Reply, SendMessage> {
         }
         val markup = InlineKeyboardMarkup()
         markup.keyboard = columns
-        return SendMessage.builder()
+        val msg = SendMessage.builder()
             .chatId(data.userID.toString())
             .text(data.text)
             .replyMarkup(markup)
             .build()
+        msg.enableHtml(true)
+        return msg
     }
 }
