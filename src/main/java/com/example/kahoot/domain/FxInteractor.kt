@@ -16,7 +16,11 @@ interface FxInteractor : SimpleObserver<MsgReceiver> {
     fun isDebugVersion(): Boolean
     fun close()
 
-    class Base(private val db: DatabaseInterface.Executor, private val presenter: MainPresenter.Full) :
+    class Base(
+        private val db: DatabaseInterface.Executor,
+        private val presenter: MainPresenter.Full,
+        private val debugMode: Boolean = false
+    ) :
         BaseObserver<MsgReceiver>(), FxInteractor, MsgReceiver {
 
         init {
@@ -47,14 +51,10 @@ interface FxInteractor : SimpleObserver<MsgReceiver> {
             return result
         }
 
-        override fun isDebugVersion(): Boolean = DEBUG
+        override fun isDebugVersion(): Boolean = debugMode
 
         override fun receiveMsg(user: User, message: String) {
             receiverList.forEach { it.receiveMsg(user, message) }
-        }
-
-        private companion object {
-            const val DEBUG = true
         }
     }
 }

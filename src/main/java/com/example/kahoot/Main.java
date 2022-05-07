@@ -15,6 +15,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.BotSession;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+import java.io.File;
 import java.io.IOException;
 
 public class Main extends Application {
@@ -26,7 +27,8 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.show();
         BaseController<Object> controller = fxmlLoader.getController();
-        controller.init(new FxInteractor.Base(db, presenter), stage);
+        boolean admin = new File("admin").exists();
+        controller.init(new FxInteractor.Base(db, presenter,admin), stage);
     }
 
     private static Bot.Base bot;
