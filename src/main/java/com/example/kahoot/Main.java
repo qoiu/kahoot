@@ -1,9 +1,12 @@
 package com.example.kahoot;
 
+import com.example.kahoot.bot.BaseBotPresenter;
 import com.example.kahoot.bot.Bot;
 import com.example.kahoot.data.DatabaseBase;
-import com.example.kahoot.domain.FxInteractor;
-import com.example.kahoot.domain.presesnter.MainPresenter;
+import com.example.kahoot.data.repository.ChatRepository;
+import com.example.kahoot.data.repository.KahootRepository;
+import com.example.kahoot.data.repository.UserRepository;
+import com.example.kahoot.domain.clean.*;
 import com.example.kahoot.presentation.BaseController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -27,45 +30,64 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.show();
         BaseController<Object> controller = fxmlLoader.getController();
-        boolean admin = new File("admin").exists();
-        controller.init(new FxInteractor.Base(db, presenter,admin), stage);
+        controller.init(fxInteractor, stage);
     }
 
     private static Bot.Base bot;
     private static BotSession session;
-    private static MainPresenter.Full presenter;
     private static DatabaseBase db;
+    private static Thread reconnection;
+    private static FxInteractor fxInteractor;
+
 
     public static void main(String[] args) {
         db = new DatabaseBase("jdbc:sqlite:kahoot.db");
-        presenter = new MainPresenter.Base(db);
-        startBot();
-        new Thread(Main::reconnected).start();
+        initialize();
+        reconnection = new Thread(Main::reconnected);
+        reconnection.start();
         launch();
     }
 
-    private static void startBot() {
+    private static void initialize() {
+        ChatRepository chatRepository = new ChatRepository(db);
+        UserRepository userRepository = new UserRepository(db);
+        KahootRepository kahootRepository = new KahootRepository(db);
+        AllRepository repository = new AllRepository.Base(kahootRepository, userRepository, chatRepository);
+        Bot bot = startBot();
+        BotPresenter botPresenter = new BaseBotPresenter(bot);
+        BotInteractor botInteractor = new BotInteractor.Base(botPresenter);
+        boolean admin = new File("admin").exists();
+        fxInteractor = new FxInteractor.Base(admin);
+        MainInteractor main = new MainInteractor.Base(fxInteractor, botInteractor, repository);
+        botInteractor.setMainInteractor(main);
+        fxInteractor.setMainInteractor(main);
+        botPresenter.setInteractor(botInteractor);
+        bot.setPresenter(botPresenter);
+    }
+
+    private static Bot.Base startBot() {
         try {
             TelegramBotsApi api = new TelegramBotsApi(DefaultBotSession.class);
             bot = new Bot.Base(new TokenReader().read("TokenEasy.txt"), new DefaultBotOptions());
             if (session != null && session.isRunning()) session.stop();
             session = api.registerBot(bot);
-            presenter.setBot(bot);
             System.out.println("Bot: started");
+            return bot;
         } catch (TelegramApiException e) {
             e.printStackTrace();
-            bot = null;
+            try {
+                Thread.sleep(4_000);
+            } catch (InterruptedException ie) {
+                ie.printStackTrace();
+            }
+            return startBot();
         }
     }
 
 
     private static void reconnected() {
-        while (true) {
-            try {
-                Thread.sleep(4_000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        boolean continuum = true;
+        while (continuum) {
             if (bot == null) {
                 startBot();
                 System.out.println("Bot: trying to reconnect");
@@ -74,9 +96,20 @@ public class Main extends Application {
                     bot.getMe();
                 } catch (NullPointerException | TelegramApiException ignored) {
                     bot = null;
-                    presenter.lostConnection();
                 }
             }
+            try {
+                Thread.sleep(4_000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                continuum = false;
+            }
         }
+    }
+
+    @Override
+    public void stop() throws Exception {
+        reconnection.interrupt();
+        super.stop();
     }
 }

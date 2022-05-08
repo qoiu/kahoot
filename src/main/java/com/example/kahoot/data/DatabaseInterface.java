@@ -9,7 +9,7 @@ public interface DatabaseInterface {
 
         ResultSet executeQuery(String sql);
 
-        int executeUpdate(String sql, Object... args);
+        long executeUpdate(String sql, Object... args);
 
         class Test implements Executor {
 
@@ -24,7 +24,7 @@ public interface DatabaseInterface {
             }
 
             @Override
-            public int executeUpdate(String sql, Object... args) {
+            public long executeUpdate(String sql, Object... args) {
                 return 0;
             }
         }

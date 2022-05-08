@@ -4,11 +4,16 @@ import com.example.kahoot.domain.model.Kahoot;
 import com.example.kahoot.domain.model.KahootQuestion;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.FileChooser;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +27,12 @@ public class KahootSizableController extends BaseController<Kahoot> {
     public TextField answ4;
     public CheckBox trueFalse;
     public ToggleGroup group;
+    public ImageView imageView;
+    public AnchorPane imagePane;
+    public Button rotate;
+    public Button clear;
 
+    private ImageViewWrapper imageWrapper;
     private Kahoot kahoot;
     private int currentId = 0;
     private boolean writableState = true;
@@ -44,7 +54,7 @@ public class KahootSizableController extends BaseController<Kahoot> {
     }
 
     private KahootQuestion newQuestion() {
-        return new KahootQuestion("New question " + kahoot.getQuestions().size(), Arrays.asList("", "", "", ""), "");
+        return new KahootQuestion("New question " + kahoot.getQuestions().size(), Arrays.asList("", "", "", ""), "", -1);
     }
 
     private void save() {
@@ -80,6 +90,9 @@ public class KahootSizableController extends BaseController<Kahoot> {
         } catch (Exception e) {
             e.fillInStackTrace();
         }
+        //Добавляем дефолтный имг
+        imageWrapper.updateImgView(defaultUri());
+        updateImgViewPane();
         writableState = true;
     }
 
@@ -142,6 +155,7 @@ public class KahootSizableController extends BaseController<Kahoot> {
         answ2.textProperty().addListener((obs) -> saveOnInput());
         answ3.textProperty().addListener((obs) -> saveOnInput());
         answ4.textProperty().addListener((obs) -> saveOnInput());
+        imageWrapper = new ImageViewWrapper(imageView, (int) getStage().getHeight());
     }
 
     @NotNull
@@ -163,7 +177,7 @@ public class KahootSizableController extends BaseController<Kahoot> {
     }
 
 
-    public void onSaveKahootAction(ActionEvent actionEvent) {
+    public void onSaveKahootAction() {
         saveOnInput();
         interactor.saveKahoot(kahoot);
         usualClose();
@@ -176,11 +190,61 @@ public class KahootSizableController extends BaseController<Kahoot> {
         }
     }
 
-    public void changeValue(ActionEvent actionEvent) {
+    public void changeValue() {
         saveOnInput();
     }
 
     private KahootQuestion getQuestion() {
         return kahoot.getQuestions().get(currentId);
+    }
+
+    public void onImageClick() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choose image");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"));
+        File selectedFile = fileChooser.showOpenDialog(getStage());
+        if (selectedFile.exists()) {
+            imageWrapper.updateImgView(selectedFile.toURI());
+            imageWrapper.saveImg(getQuestion().getId() + "");
+        }
+        updateImgViewPane();
+    }
+
+
+    public void onImageRotate() {
+        imageWrapper.rotateImage();
+        imageWrapper.saveImg(getQuestion().getId() + "");
+    }
+
+    private void updateImgViewPane() {
+        boolean show = imageWrapper.hasImage();
+        imagePane.setVisible(show);
+        clear.setDisable(!show);
+        rotate.setDisable(!show);
+        if (show) {
+            imagePane.setMinHeight(imageView.getFitHeight());
+        } else {
+            imagePane.setMinHeight(0);
+        }
+    }
+
+    @Nullable
+    private URI getUri(String filename) {
+        File file = new File(filename);
+        if (!file.exists()) {
+            System.out.println("This question don't have image");
+            return null;
+        } else {
+            return file.toURI();
+        }
+    }
+
+    private URI defaultUri() {
+        return getUri("pict/" + getQuestion().getId() + ".jpg");
+    }
+
+    public void onImageClear() {
+        imageWrapper.clear(defaultUri());
+        updateImgViewPane();
     }
 }

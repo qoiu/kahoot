@@ -1,15 +1,15 @@
 package com.example.kahoot.bot
 
+import com.example.kahoot.domain.clean.BotPresenter
 import com.example.kahoot.domain.model.Reply
 import com.example.kahoot.domain.model.User
-import com.example.kahoot.domain.presesnter.MainPresenter
 import org.telegram.telegrambots.bots.DefaultBotOptions
 import org.telegram.telegrambots.meta.api.objects.Message
 import org.telegram.telegrambots.meta.api.objects.Update
 
 interface Bot {
 
-    fun setPresenter(presenter: MainPresenter.Full)
+    fun setPresenter(presenter: BotPresenter)
     fun sendMsg(reply: Reply)
     fun clearChat(id: Long, user: Boolean = true, bot: Boolean = true)
 
@@ -22,9 +22,7 @@ interface Bot {
 
     class Base(token: String, options: DefaultBotOptions = DefaultBotOptions()) : BaseBot.Base(token, options), Bot,
         Delete {
-
-        private lateinit var presenter: MainPresenter.Full
-        private val chatBotHistory = mutableMapOf<Long, UserHistory>()
+        private lateinit var presenter: BotPresenter
 
         override fun getBotUsername(): String = "@TestBot"
 
@@ -62,23 +60,18 @@ interface Bot {
             )
         )
 
-        override fun setPresenter(presenter: MainPresenter.Full) {
+        override fun setPresenter(presenter: BotPresenter) {
             this.presenter = presenter
-            presenter.getAllUsers().forEach {
-                chatBotHistory[it.id] = UserHistory()
-            }
         }
 
         override fun sendMsg(reply: Reply) {
             val msg = ReplyToMessageMapper().map(reply)
             val message = execute(msg)
-            chatBotHistory[reply.userID]?.saveMsg(message)
             clearMsgFromBotBeforeMessage(message)
         }
 
         override fun clearChat(id: Long, user: Boolean, bot: Boolean) {
-            if (bot)
-                chatBotHistory[id]?.clearHistory(this)
+            // TODO: 08.05.2022 clearChat?
         }
 
         override fun stop() {

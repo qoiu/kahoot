@@ -3,15 +3,15 @@ package com.example.kahoot.data.executors
 import com.example.kahoot.data.DatabaseInterface
 import com.example.kahoot.domain.model.Kahoot
 
-class DbAddKahoot(private val db: DatabaseInterface.Executor) : DbExecutor.Base<Kahoot, Int> {
-    override fun execute(objects: Kahoot): Int {
-        val id = if (objects.id == -1L) {
+class DbAddKahoot(private val db: DatabaseInterface.Executor) : DbExecutor.Base<Kahoot, Long> {
+    override fun execute(objects: Kahoot): Long {
+        val id: Long = if (objects.id == -1L) {
             val sql = "INSERT or IGNORE INTO Kahoot (title) VALUES (?)"
             db.executeUpdate(sql, objects.title)
         } else {
             val sql = "INSERT or IGNORE INTO Kahoot (id,title) VALUES (${objects.id}, ? )"
             db.execute(sql, objects.title)
-            objects.id.toInt()
+            objects.id
         }
         val set = db.executeQuery("SELECT id FROM Question WHERE kid = $id")
         try {

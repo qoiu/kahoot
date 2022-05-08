@@ -1,7 +1,7 @@
 package com.example.kahoot.presentation
 
 import com.example.kahoot.Main
-import com.example.kahoot.domain.FxInteractor
+import com.example.kahoot.domain.clean.FxInteractor
 import javafx.application.Platform
 import javafx.event.EventHandler
 import javafx.fxml.FXMLLoader

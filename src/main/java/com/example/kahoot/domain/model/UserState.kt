@@ -1,8 +1,6 @@
 package com.example.kahoot.domain.model
 
-import com.example.kahoot.data.DatabaseInterface.Executor
-import com.example.kahoot.data.executors.DbAddUser
-import com.example.kahoot.domain.presesnter.MainPresenter
+import com.example.kahoot.domain.clean.MainInteractor
 
 sealed class UserState {
     protected lateinit var user: User
@@ -20,19 +18,19 @@ sealed class UserState {
 
     class Default : UserState() {
         override fun execute(message: String) {
-            presenter.postMsg(Reply(user.id, "Enter pin code", emptyList()))
+            interactor.bot().postMsg(Reply(user.id, "Enter pin code", emptyList()))
         }
     }
 
     class Ready : UserState() {
         override fun execute(message: String) {
             user.currentNick = message
-            DbAddUser(db).execute(user)
+            interactor.repository().user().save(user)
             execute()
         }
 
         override fun execute() {
-            presenter.postMsg(
+            interactor.bot().postMsg(
                 Reply(
                     user.id,
                     "Now you ready to start\nYour name: <b>${user.currentNick}</b>\nIf you want, you may enter another name\n\nPlease wait for start...",
@@ -45,17 +43,17 @@ sealed class UserState {
         }
     }
 
-    class QuestionResult(private val question: KahootQuestion) : UserState(){
+    class QuestionResult(private val question: KahootQuestion) : UserState() {
         override fun execute() {
-            val text =  "${question.question}\nCorrect answer: ${question.question}!"
-            presenter.postMsg(Reply(user.id,text))
+            val text = "${question.question}\nCorrect answer: ${question.question}!"
+            interactor.bot().postMsg(Reply(user.id, text))
         }
     }
 
     class Answer(private val question: KahootQuestion, private val game: Game.Answer) : UserState() {
         override fun execute(message: String) {
             if (message.startsWith("/") && message[1].toString().toInt() in 0 until question.answers.size) {
-                presenter.postMsg(
+                interactor.bot().postMsg(
                     Reply(
                         user.id,
                         "${question.question}\n${question.answers[message[1].toString().toInt()]}"
@@ -68,7 +66,7 @@ sealed class UserState {
         }
 
         override fun execute() {
-            presenter.postMsg(
+            interactor.bot().postMsg(
                 Reply(
                     user.id, question.question, listOf(
                         Btn(question.answers[0], "/0"),
@@ -91,13 +89,9 @@ sealed class UserState {
 
     companion object {
         @JvmStatic
-        protected lateinit var db: Executor
-
-        @JvmStatic
-        protected lateinit var presenter: MainPresenter.MessengerActions
-        fun init(db: Executor, presenter: MainPresenter.MessengerActions) {
-            Companion.db = db
-            Companion.presenter = presenter
+        protected lateinit var interactor: MainInteractor
+        fun init(interactor: MainInteractor) {
+            this.interactor = interactor
         }
     }
 }

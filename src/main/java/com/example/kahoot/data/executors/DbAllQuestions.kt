@@ -15,7 +15,7 @@ class DbAllQuestions(private val db: DatabaseInterface.Executor) : DbExecutor.Ge
                 val title = set.getString("title")
                 val correct = set.getString("correct")
                 val answers = DbAllAnswers(db).execute(kid)
-                result.add(KahootQuestion(title, answers.toMutableList(), correct))
+                result.add(KahootQuestion(title, answers.toMutableList(), correct, kid))
             }
         } catch (e: SQLException) {
             e.printStackTrace()

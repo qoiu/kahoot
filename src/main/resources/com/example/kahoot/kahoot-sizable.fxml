@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="571.0"
@@ -25,15 +26,34 @@
         </TextField>
         <CheckBox fx:id="trueFalse" alignment="CENTER" mnemonicParsing="false" onAction="#changeTrueFalse"
                   text="True/False" VBox.vgrow="ALWAYS">
-            <padding>
-                <Insets left="40.0" right="40.0"/>
-            </padding>
+            <VBox.margin>
+                <Insets bottom="20.0" left="40.0" right="40.0" top="10.0"/>
+            </VBox.margin>
         </CheckBox>
-        <Pane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+        <HBox>
+            <Button mnemonicParsing="false" onAction="#onImageClick" text="Add Image">
+                <HBox.margin>
+                    <Insets left="40.0"/>
+                </HBox.margin>
+            </Button>
+            <Button fx:id="rotate" mnemonicParsing="false" onAction="#onImageRotate" text="Rotate">
+                <HBox.margin>
+                    <Insets left="40.0"/>
+                </HBox.margin>
+            </Button>
+            <Button fx:id="clear" mnemonicParsing="false" onAction="#onImageClear" text="Clear">
+                <HBox.margin>
+                    <Insets left="40.0"/>
+                </HBox.margin>
+            </Button>
+        </HBox>
+        <AnchorPane fx:id="imagePane" minHeight="0.0" minWidth="0.0" prefHeight="0.0" visible="false"
+                    VBox.vgrow="ALWAYS">
+            <ImageView fx:id="imageView" fitHeight="200.0" fitWidth="400.0" pickOnBounds="true" smooth="false"/>
             <VBox.margin>
                 <Insets bottom="40.0" left="40.0" right="40.0" top="40.0"/>
             </VBox.margin>
-        </Pane>
+        </AnchorPane>
         <HBox prefHeight="100.0" prefWidth="200.0">
             <TextField fx:id="answ1" promptText="Please enter answer" HBox.hgrow="ALWAYS">
                 <HBox.margin>
@@ -59,8 +79,7 @@
                     <Font size="14.0"/>
                 </font>
             </TextField>
-            <RadioButton fx:id="answRbtn2" mnemonicParsing="false" onAction="#changeValue"
-                         toggleGroup="$group">
+            <RadioButton fx:id="answRbtn2" mnemonicParsing="false" onAction="#changeValue" toggleGroup="$group">
                 <HBox.margin>
                     <Insets bottom="40.0" right="40.0" top="40.0"/>
                 </HBox.margin>
@@ -75,8 +94,7 @@
                     <Font size="14.0"/>
                 </font>
             </TextField>
-            <RadioButton fx:id="answRbtn3" mnemonicParsing="false" onAction="#changeValue"
-                         toggleGroup="$group">
+            <RadioButton fx:id="answRbtn3" mnemonicParsing="false" onAction="#changeValue" toggleGroup="$group">
                 <HBox.margin>
                     <Insets bottom="40.0" right="20.0" top="40.0"/>
                 </HBox.margin>
@@ -89,8 +107,7 @@
                     <Font size="14.0"/>
                 </font>
             </TextField>
-            <RadioButton fx:id="answRbtn4" mnemonicParsing="false" onAction="#changeValue"
-                         toggleGroup="$group">
+            <RadioButton fx:id="answRbtn4" mnemonicParsing="false" onAction="#changeValue" toggleGroup="$group">
                 <HBox.margin>
                     <Insets bottom="40.0" right="40.0" top="40.0"/>
                 </HBox.margin>

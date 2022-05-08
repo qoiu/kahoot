@@ -31,7 +31,7 @@ public class DatabaseBase implements DatabaseInterface.Global {
         }
     }
 
-    public int executeUpdate(String sql, Object... args) {
+    public long executeUpdate(String sql, Object... args) {
         try {
             PreparedStatement statement = statementWithArgs(sql, args);
             int id = -1;
